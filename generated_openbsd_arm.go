@@ -201,6 +201,48 @@ func Getpagesize() int {
 	return unix.Getpagesize()
 }
 
+// Pledge is an alias of golang.org/x/sys/unix.Pledge, wrapped to automatically retry on EINTR.
+func Pledge(promises, execpromises string) error {
+	var (
+		_v0 error
+	)
+	for {
+		_v0 = unix.Pledge(promises, execpromises)
+		if _v0 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0
+}
+
+// PledgePromises is an alias of golang.org/x/sys/unix.PledgePromises, wrapped to automatically retry on EINTR.
+func PledgePromises(promises string) error {
+	var (
+		_v0 error
+	)
+	for {
+		_v0 = unix.PledgePromises(promises)
+		if _v0 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0
+}
+
+// PledgeExecpromises is an alias of golang.org/x/sys/unix.PledgeExecpromises, wrapped to automatically retry on EINTR.
+func PledgeExecpromises(execpromises string) error {
+	var (
+		_v0 error
+	)
+	for {
+		_v0 = unix.PledgeExecpromises(execpromises)
+		if _v0 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0
+}
+
 // ReadDirent is an alias of golang.org/x/sys/unix.ReadDirent, wrapped to automatically retry on EINTR.
 func ReadDirent(fd int, buf []byte) (n int, err error) {
 	for {
@@ -448,10 +490,10 @@ func SysctlArgs(name string, args int) (string, error) {
 // SysctlUint32 is an alias of golang.org/x/sys/unix.SysctlUint32, wrapped to automatically retry on EINTR.
 func SysctlUint32(name string) (uint32, error) {
 	var (
-		_v0 uint32
+		_v1 error
 	)
 	var (
-		_v1 error
+		_v0 uint32
 	)
 	for {
 		_v0, _v1 = unix.SysctlUint32(name)
@@ -506,6 +548,23 @@ func SysctlRaw(name string, args int) ([]byte, error) {
 	)
 	for {
 		_v0, _v1 = unix.SysctlRaw(name, args)
+		if _v1 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0, _v1
+}
+
+// SysctlClockinfo is an alias of golang.org/x/sys/unix.SysctlClockinfo, wrapped to automatically retry on EINTR.
+func SysctlClockinfo(name string) (*unix.Clockinfo, error) {
+	var (
+		_v0 *unix.Clockinfo
+	)
+	var (
+		_v1 error
+	)
+	for {
+		_v0, _v1 = unix.SysctlClockinfo(name)
 		if _v1 != syscall.EINTR {
 			break
 		}
@@ -602,27 +661,10 @@ func Munmap(b []byte) (err error) {
 	return
 }
 
-// Getwd is an alias of golang.org/x/sys/unix.Getwd, wrapped to automatically retry on EINTR.
-func Getwd() (string, error) {
-	var (
-		_v0 string
-	)
-	var (
-		_v1 error
-	)
+// Syscall9 is an alias of golang.org/x/sys/unix.Syscall9, wrapped to automatically retry on EINTR.
+func Syscall9(trap, a1, a2, a3, a4, a5, a6, a7, a8, a9 uintptr) (r1, r2 uintptr, err syscall.Errno) {
 	for {
-		_v0, _v1 = unix.Getwd()
-		if _v1 != syscall.EINTR {
-			break
-		}
-	}
-	return _v0, _v1
-}
-
-// PtraceAttach is an alias of golang.org/x/sys/unix.PtraceAttach, wrapped to automatically retry on EINTR.
-func PtraceAttach(pid int) (err error) {
-	for {
-		err = unix.PtraceAttach(pid)
+		r1, r2, err = unix.Syscall9(trap, a1, a2, a3, a4, a5, a6, a7, a8, a9)
 		if err != syscall.EINTR {
 			break
 		}
@@ -630,27 +672,16 @@ func PtraceAttach(pid int) (err error) {
 	return
 }
 
-// PtraceDetach is an alias of golang.org/x/sys/unix.PtraceDetach, wrapped to automatically retry on EINTR.
-func PtraceDetach(pid int) (err error) {
-	for {
-		err = unix.PtraceDetach(pid)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// SysctlClockinfo is an alias of golang.org/x/sys/unix.SysctlClockinfo, wrapped to automatically retry on EINTR.
-func SysctlClockinfo(name string) (*unix.Clockinfo, error) {
+// SysctlUvmexp is an alias of golang.org/x/sys/unix.SysctlUvmexp, wrapped to automatically retry on EINTR.
+func SysctlUvmexp(name string) (*unix.Uvmexp, error) {
 	var (
-		_v0 *unix.Clockinfo
+		_v0 *unix.Uvmexp
 	)
 	var (
 		_v1 error
 	)
 	for {
-		_v0, _v1 = unix.SysctlClockinfo(name)
+		_v0, _v1 = unix.SysctlUvmexp(name)
 		if _v1 != syscall.EINTR {
 			break
 		}
@@ -669,6 +700,59 @@ func Pipe(p []int) (err error) {
 	return
 }
 
+// Pipe2 is an alias of golang.org/x/sys/unix.Pipe2, wrapped to automatically retry on EINTR.
+func Pipe2(p []int, flags int) error {
+	var (
+		_v0 error
+	)
+	for {
+		_v0 = unix.Pipe2(p, flags)
+		if _v0 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0
+}
+
+// Getdirentries is an alias of golang.org/x/sys/unix.Getdirentries, wrapped to automatically retry on EINTR.
+func Getdirentries(fd int, buf []byte, basep *uintptr) (n int, err error) {
+	for {
+		n, err = unix.Getdirentries(fd, buf, basep)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Getwd is an alias of golang.org/x/sys/unix.Getwd, wrapped to automatically retry on EINTR.
+func Getwd() (string, error) {
+	var (
+		_v0 string
+	)
+	var (
+		_v1 error
+	)
+	for {
+		_v0, _v1 = unix.Getwd()
+		if _v1 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0, _v1
+}
+
+// Sendfile is an alias of golang.org/x/sys/unix.Sendfile, wrapped to automatically retry on EINTR.
+func Sendfile(outfd int, infd int, offset *int64, count int) (written int, err error) {
+	for {
+		written, err = unix.Sendfile(outfd, infd, offset, count)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Getfsstat is an alias of golang.org/x/sys/unix.Getfsstat, wrapped to automatically retry on EINTR.
 func Getfsstat(buf []unix.Statfs_t, flags int) (n int, err error) {
 	for {
@@ -680,142 +764,10 @@ func Getfsstat(buf []unix.Statfs_t, flags int) (n int, err error) {
 	return
 }
 
-// Getxattr is an alias of golang.org/x/sys/unix.Getxattr, wrapped to automatically retry on EINTR.
-func Getxattr(path string, attr string, dest []byte) (sz int, err error) {
+// Ppoll is an alias of golang.org/x/sys/unix.Ppoll, wrapped to automatically retry on EINTR.
+func Ppoll(fds []unix.PollFd, timeout *unix.Timespec, sigmask *unix.Sigset_t) (n int, err error) {
 	for {
-		sz, err = unix.Getxattr(path, attr, dest)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Lgetxattr is an alias of golang.org/x/sys/unix.Lgetxattr, wrapped to automatically retry on EINTR.
-func Lgetxattr(link string, attr string, dest []byte) (sz int, err error) {
-	for {
-		sz, err = unix.Lgetxattr(link, attr, dest)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Fgetxattr is an alias of golang.org/x/sys/unix.Fgetxattr, wrapped to automatically retry on EINTR.
-func Fgetxattr(fd int, attr string, dest []byte) (sz int, err error) {
-	for {
-		sz, err = unix.Fgetxattr(fd, attr, dest)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Setxattr is an alias of golang.org/x/sys/unix.Setxattr, wrapped to automatically retry on EINTR.
-func Setxattr(path string, attr string, data []byte, flags int) (err error) {
-	for {
-		err = unix.Setxattr(path, attr, data, flags)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Lsetxattr is an alias of golang.org/x/sys/unix.Lsetxattr, wrapped to automatically retry on EINTR.
-func Lsetxattr(link string, attr string, data []byte, flags int) (err error) {
-	for {
-		err = unix.Lsetxattr(link, attr, data, flags)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Fsetxattr is an alias of golang.org/x/sys/unix.Fsetxattr, wrapped to automatically retry on EINTR.
-func Fsetxattr(fd int, attr string, data []byte, flags int) (err error) {
-	for {
-		err = unix.Fsetxattr(fd, attr, data, flags)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Removexattr is an alias of golang.org/x/sys/unix.Removexattr, wrapped to automatically retry on EINTR.
-func Removexattr(path string, attr string) (err error) {
-	for {
-		err = unix.Removexattr(path, attr)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Lremovexattr is an alias of golang.org/x/sys/unix.Lremovexattr, wrapped to automatically retry on EINTR.
-func Lremovexattr(link string, attr string) (err error) {
-	for {
-		err = unix.Lremovexattr(link, attr)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Fremovexattr is an alias of golang.org/x/sys/unix.Fremovexattr, wrapped to automatically retry on EINTR.
-func Fremovexattr(fd int, attr string) (err error) {
-	for {
-		err = unix.Fremovexattr(fd, attr)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Listxattr is an alias of golang.org/x/sys/unix.Listxattr, wrapped to automatically retry on EINTR.
-func Listxattr(path string, dest []byte) (sz int, err error) {
-	for {
-		sz, err = unix.Listxattr(path, dest)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Llistxattr is an alias of golang.org/x/sys/unix.Llistxattr, wrapped to automatically retry on EINTR.
-func Llistxattr(link string, dest []byte) (sz int, err error) {
-	for {
-		sz, err = unix.Llistxattr(link, dest)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Flistxattr is an alias of golang.org/x/sys/unix.Flistxattr, wrapped to automatically retry on EINTR.
-func Flistxattr(fd int, dest []byte) (sz int, err error) {
-	for {
-		sz, err = unix.Flistxattr(fd, dest)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Kill is an alias of golang.org/x/sys/unix.Kill, wrapped to automatically retry on EINTR.
-func Kill(pid int, signum syscall.Signal) (err error) {
-	for {
-		err = unix.Kill(pid, signum)
+		n, err = unix.Ppoll(fds, timeout, sigmask)
 		if err != syscall.EINTR {
 			break
 		}
@@ -837,42 +789,9 @@ func Uname(uname *unix.Utsname) error {
 	return _v0
 }
 
-// Sendfile is an alias of golang.org/x/sys/unix.Sendfile, wrapped to automatically retry on EINTR.
-func Sendfile(outfd int, infd int, offset *int64, count int) (written int, err error) {
-	for {
-		written, err = unix.Sendfile(outfd, infd, offset, count)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Gettimeofday is an alias of golang.org/x/sys/unix.Gettimeofday, wrapped to automatically retry on EINTR.
-func Gettimeofday(tv *unix.Timeval) (err error) {
-	for {
-		err = unix.Gettimeofday(tv)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
 // SetKevent is an alias of golang.org/x/sys/unix.SetKevent.
 func SetKevent(k *unix.Kevent_t, fd, mode, flags int) {
 	unix.SetKevent(k, fd, mode, flags)
-}
-
-// Syscall9 is an alias of golang.org/x/sys/unix.Syscall9, wrapped to automatically retry on EINTR.
-func Syscall9(num, a1, a2, a3, a4, a5, a6, a7, a8, a9 uintptr) (r1, r2 uintptr, err syscall.Errno) {
-	for {
-		r1, r2, err = unix.Syscall9(num, a1, a2, a3, a4, a5, a6, a7, a8, a9)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
 }
 
 // ErrnoName is an alias of golang.org/x/sys/unix.ErrnoName.
@@ -998,10 +917,10 @@ func GetsockoptIPMreq(fd, level, opt int) (*unix.IPMreq, error) {
 // GetsockoptIPv6Mreq is an alias of golang.org/x/sys/unix.GetsockoptIPv6Mreq, wrapped to automatically retry on EINTR.
 func GetsockoptIPv6Mreq(fd, level, opt int) (*unix.IPv6Mreq, error) {
 	var (
-		_v1 error
+		_v0 *unix.IPv6Mreq
 	)
 	var (
-		_v0 *unix.IPv6Mreq
+		_v1 error
 	)
 	for {
 		_v0, _v1 = unix.GetsockoptIPv6Mreq(fd, level, opt)
@@ -1015,10 +934,10 @@ func GetsockoptIPv6Mreq(fd, level, opt int) (*unix.IPv6Mreq, error) {
 // GetsockoptIPv6MTUInfo is an alias of golang.org/x/sys/unix.GetsockoptIPv6MTUInfo, wrapped to automatically retry on EINTR.
 func GetsockoptIPv6MTUInfo(fd, level, opt int) (*unix.IPv6MTUInfo, error) {
 	var (
-		_v0 *unix.IPv6MTUInfo
+		_v1 error
 	)
 	var (
-		_v1 error
+		_v0 *unix.IPv6MTUInfo
 	)
 	for {
 		_v0, _v1 = unix.GetsockoptIPv6MTUInfo(fd, level, opt)
@@ -1032,10 +951,10 @@ func GetsockoptIPv6MTUInfo(fd, level, opt int) (*unix.IPv6MTUInfo, error) {
 // GetsockoptICMPv6Filter is an alias of golang.org/x/sys/unix.GetsockoptICMPv6Filter, wrapped to automatically retry on EINTR.
 func GetsockoptICMPv6Filter(fd, level, opt int) (*unix.ICMPv6Filter, error) {
 	var (
-		_v1 error
+		_v0 *unix.ICMPv6Filter
 	)
 	var (
-		_v0 *unix.ICMPv6Filter
+		_v1 error
 	)
 	for {
 		_v0, _v1 = unix.GetsockoptICMPv6Filter(fd, level, opt)
@@ -1373,6 +1292,34 @@ func NsecToTimeval(nsec int64) unix.Timeval {
 	return unix.NsecToTimeval(nsec)
 }
 
+// Unveil is an alias of golang.org/x/sys/unix.Unveil, wrapped to automatically retry on EINTR.
+func Unveil(path string, flags string) error {
+	var (
+		_v0 error
+	)
+	for {
+		_v0 = unix.Unveil(path, flags)
+		if _v0 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0
+}
+
+// UnveilBlock is an alias of golang.org/x/sys/unix.UnveilBlock, wrapped to automatically retry on EINTR.
+func UnveilBlock() error {
+	var (
+		_v0 error
+	)
+	for {
+		_v0 = unix.UnveilBlock()
+		if _v0 != syscall.EINTR {
+			break
+		}
+	}
+	return _v0
+}
+
 // Shutdown is an alias of golang.org/x/sys/unix.Shutdown, wrapped to automatically retry on EINTR.
 func Shutdown(s int, how int) (err error) {
 	for {
@@ -1461,6 +1408,28 @@ func Munlockall() (err error) {
 	return
 }
 
+// Getdents is an alias of golang.org/x/sys/unix.Getdents, wrapped to automatically retry on EINTR.
+func Getdents(fd int, buf []byte) (n int, err error) {
+	for {
+		n, err = unix.Getdents(fd, buf)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Getcwd is an alias of golang.org/x/sys/unix.Getcwd, wrapped to automatically retry on EINTR.
+func Getcwd(buf []byte) (n int, err error) {
+	for {
+		n, err = unix.Getcwd(buf)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Access is an alias of golang.org/x/sys/unix.Access, wrapped to automatically retry on EINTR.
 func Access(path string, mode uint32) (err error) {
 	for {
@@ -1538,17 +1507,6 @@ func Chroot(path string) (err error) {
 	return
 }
 
-// ClockGettime is an alias of golang.org/x/sys/unix.ClockGettime, wrapped to automatically retry on EINTR.
-func ClockGettime(clockid int32, time *unix.Timespec) (err error) {
-	for {
-		err = unix.ClockGettime(clockid, time)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
 // Close is an alias of golang.org/x/sys/unix.Close. Does NOT retry on EINTR. See close(2) for the reason.
 func Close(fd int) (err error) {
 	return unix.Close(fd)
@@ -1576,10 +1534,10 @@ func Dup2(from int, to int) (err error) {
 	return
 }
 
-// Exchangedata is an alias of golang.org/x/sys/unix.Exchangedata, wrapped to automatically retry on EINTR.
-func Exchangedata(path1 string, path2 string, options int) (err error) {
+// Dup3 is an alias of golang.org/x/sys/unix.Dup3, wrapped to automatically retry on EINTR.
+func Dup3(from int, to int, flags int) (err error) {
 	for {
-		err = unix.Exchangedata(path1, path2, options)
+		err = unix.Dup3(from, to, flags)
 		if err != syscall.EINTR {
 			break
 		}
@@ -1691,6 +1649,39 @@ func Fpathconf(fd int, name int) (val int, err error) {
 	return
 }
 
+// Fstat is an alias of golang.org/x/sys/unix.Fstat, wrapped to automatically retry on EINTR.
+func Fstat(fd int, stat *unix.Stat_t) (err error) {
+	for {
+		err = unix.Fstat(fd, stat)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Fstatat is an alias of golang.org/x/sys/unix.Fstatat, wrapped to automatically retry on EINTR.
+func Fstatat(fd int, path string, stat *unix.Stat_t, flags int) (err error) {
+	for {
+		err = unix.Fstatat(fd, path, stat, flags)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Fstatfs is an alias of golang.org/x/sys/unix.Fstatfs, wrapped to automatically retry on EINTR.
+func Fstatfs(fd int, stat *unix.Statfs_t) (err error) {
+	for {
+		err = unix.Fstatfs(fd, stat)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Fsync is an alias of golang.org/x/sys/unix.Fsync, wrapped to automatically retry on EINTR.
 func Fsync(fd int) (err error) {
 	for {
@@ -1711,11 +1702,6 @@ func Ftruncate(fd int, length int64) (err error) {
 		}
 	}
 	return
-}
-
-// Getdtablesize is an alias of golang.org/x/sys/unix.Getdtablesize.
-func Getdtablesize() (size int) {
-	return unix.Getdtablesize()
 }
 
 // Getegid is an alias of golang.org/x/sys/unix.Getegid.
@@ -1781,6 +1767,17 @@ func Getrlimit(which int, lim *unix.Rlimit) (err error) {
 	return
 }
 
+// Getrtable is an alias of golang.org/x/sys/unix.Getrtable, wrapped to automatically retry on EINTR.
+func Getrtable() (rtable int, err error) {
+	for {
+		rtable, err = unix.Getrtable()
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Getrusage is an alias of golang.org/x/sys/unix.Getrusage, wrapped to automatically retry on EINTR.
 func Getrusage(who int, rusage *unix.Rusage) (err error) {
 	for {
@@ -1803,6 +1800,17 @@ func Getsid(pid int) (sid int, err error) {
 	return
 }
 
+// Gettimeofday is an alias of golang.org/x/sys/unix.Gettimeofday, wrapped to automatically retry on EINTR.
+func Gettimeofday(tv *unix.Timeval) (err error) {
+	for {
+		err = unix.Gettimeofday(tv)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Getuid is an alias of golang.org/x/sys/unix.Getuid.
 func Getuid() (uid int) {
 	return unix.Getuid()
@@ -1811,6 +1819,17 @@ func Getuid() (uid int) {
 // Issetugid is an alias of golang.org/x/sys/unix.Issetugid.
 func Issetugid() (tainted bool) {
 	return unix.Issetugid()
+}
+
+// Kill is an alias of golang.org/x/sys/unix.Kill, wrapped to automatically retry on EINTR.
+func Kill(pid int, signum syscall.Signal) (err error) {
+	for {
+		err = unix.Kill(pid, signum)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
 }
 
 // Kqueue is an alias of golang.org/x/sys/unix.Kqueue, wrapped to automatically retry on EINTR.
@@ -1868,6 +1887,17 @@ func Listen(s int, backlog int) (err error) {
 	return
 }
 
+// Lstat is an alias of golang.org/x/sys/unix.Lstat, wrapped to automatically retry on EINTR.
+func Lstat(path string, stat *unix.Stat_t) (err error) {
+	for {
+		err = unix.Lstat(path, stat)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Mkdir is an alias of golang.org/x/sys/unix.Mkdir, wrapped to automatically retry on EINTR.
 func Mkdir(path string, mode uint32) (err error) {
 	for {
@@ -1901,10 +1931,43 @@ func Mkfifo(path string, mode uint32) (err error) {
 	return
 }
 
+// Mkfifoat is an alias of golang.org/x/sys/unix.Mkfifoat, wrapped to automatically retry on EINTR.
+func Mkfifoat(dirfd int, path string, mode uint32) (err error) {
+	for {
+		err = unix.Mkfifoat(dirfd, path, mode)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Mknod is an alias of golang.org/x/sys/unix.Mknod, wrapped to automatically retry on EINTR.
 func Mknod(path string, mode uint32, dev int) (err error) {
 	for {
 		err = unix.Mknod(path, mode, dev)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Mknodat is an alias of golang.org/x/sys/unix.Mknodat, wrapped to automatically retry on EINTR.
+func Mknodat(dirfd int, path string, mode uint32, dev int) (err error) {
+	for {
+		err = unix.Mknodat(dirfd, path, mode, dev)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Nanosleep is an alias of golang.org/x/sys/unix.Nanosleep, wrapped to automatically retry on EINTR.
+func Nanosleep(time *unix.Timespec, leftover *unix.Timespec) (err error) {
+	for {
+		err = unix.Nanosleep(time, leftover)
 		if err != syscall.EINTR {
 			break
 		}
@@ -2045,9 +2108,9 @@ func Seek(fd int, offset int64, whence int) (newoffset int64, err error) {
 }
 
 // Select is an alias of golang.org/x/sys/unix.Select, wrapped to automatically retry on EINTR.
-func Select(n int, r *unix.FdSet, w *unix.FdSet, e *unix.FdSet, timeout *unix.Timeval) (err error) {
+func Select(nfd int, r *unix.FdSet, w *unix.FdSet, e *unix.FdSet, timeout *unix.Timeval) (n int, err error) {
 	for {
-		err = unix.Select(n, r, w, e, timeout)
+		n, err = unix.Select(nfd, r, w, e, timeout)
 		if err != syscall.EINTR {
 			break
 		}
@@ -2121,17 +2184,6 @@ func Setpriority(which int, who int, prio int) (err error) {
 	return
 }
 
-// Setprivexec is an alias of golang.org/x/sys/unix.Setprivexec, wrapped to automatically retry on EINTR.
-func Setprivexec(flag int) (err error) {
-	for {
-		err = unix.Setprivexec(flag)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
 // Setregid is an alias of golang.org/x/sys/unix.Setregid, wrapped to automatically retry on EINTR.
 func Setregid(rgid int, egid int) (err error) {
 	for {
@@ -2154,10 +2206,43 @@ func Setreuid(ruid int, euid int) (err error) {
 	return
 }
 
+// Setresgid is an alias of golang.org/x/sys/unix.Setresgid, wrapped to automatically retry on EINTR.
+func Setresgid(rgid int, egid int, sgid int) (err error) {
+	for {
+		err = unix.Setresgid(rgid, egid, sgid)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Setresuid is an alias of golang.org/x/sys/unix.Setresuid, wrapped to automatically retry on EINTR.
+func Setresuid(ruid int, euid int, suid int) (err error) {
+	for {
+		err = unix.Setresuid(ruid, euid, suid)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
 // Setrlimit is an alias of golang.org/x/sys/unix.Setrlimit, wrapped to automatically retry on EINTR.
 func Setrlimit(which int, lim *unix.Rlimit) (err error) {
 	for {
 		err = unix.Setrlimit(which, lim)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Setrtable is an alias of golang.org/x/sys/unix.Setrtable, wrapped to automatically retry on EINTR.
+func Setrtable(rtable int) (err error) {
+	for {
+		err = unix.Setrtable(rtable)
 		if err != syscall.EINTR {
 			break
 		}
@@ -2191,6 +2276,28 @@ func Settimeofday(tp *unix.Timeval) (err error) {
 func Setuid(uid int) (err error) {
 	for {
 		err = unix.Setuid(uid)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Stat is an alias of golang.org/x/sys/unix.Stat, wrapped to automatically retry on EINTR.
+func Stat(path string, stat *unix.Stat_t) (err error) {
+	for {
+		err = unix.Stat(path, stat)
+		if err != syscall.EINTR {
+			break
+		}
+	}
+	return
+}
+
+// Statfs is an alias of golang.org/x/sys/unix.Statfs, wrapped to automatically retry on EINTR.
+func Statfs(path string, stat *unix.Statfs_t) (err error) {
+	for {
+		err = unix.Statfs(path, stat)
 		if err != syscall.EINTR {
 			break
 		}
@@ -2247,17 +2354,6 @@ func Umask(newmask int) (oldmask int) {
 	return unix.Umask(newmask)
 }
 
-// Undelete is an alias of golang.org/x/sys/unix.Undelete, wrapped to automatically retry on EINTR.
-func Undelete(path string) (err error) {
-	for {
-		err = unix.Undelete(path)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
 // Unlink is an alias of golang.org/x/sys/unix.Unlink, wrapped to automatically retry on EINTR.
 func Unlink(path string) (err error) {
 	for {
@@ -2284,83 +2380,6 @@ func Unlinkat(dirfd int, path string, flags int) (err error) {
 func Unmount(path string, flags int) (err error) {
 	for {
 		err = unix.Unmount(path, flags)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Fstat is an alias of golang.org/x/sys/unix.Fstat, wrapped to automatically retry on EINTR.
-func Fstat(fd int, stat *unix.Stat_t) (err error) {
-	for {
-		err = unix.Fstat(fd, stat)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Fstatat is an alias of golang.org/x/sys/unix.Fstatat, wrapped to automatically retry on EINTR.
-func Fstatat(fd int, path string, stat *unix.Stat_t, flags int) (err error) {
-	for {
-		err = unix.Fstatat(fd, path, stat, flags)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Fstatfs is an alias of golang.org/x/sys/unix.Fstatfs, wrapped to automatically retry on EINTR.
-func Fstatfs(fd int, stat *unix.Statfs_t) (err error) {
-	for {
-		err = unix.Fstatfs(fd, stat)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Getdirentries is an alias of golang.org/x/sys/unix.Getdirentries, wrapped to automatically retry on EINTR.
-func Getdirentries(fd int, buf []byte, basep *uintptr) (n int, err error) {
-	for {
-		n, err = unix.Getdirentries(fd, buf, basep)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Lstat is an alias of golang.org/x/sys/unix.Lstat, wrapped to automatically retry on EINTR.
-func Lstat(path string, stat *unix.Stat_t) (err error) {
-	for {
-		err = unix.Lstat(path, stat)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Stat is an alias of golang.org/x/sys/unix.Stat, wrapped to automatically retry on EINTR.
-func Stat(path string, stat *unix.Stat_t) (err error) {
-	for {
-		err = unix.Stat(path, stat)
-		if err != syscall.EINTR {
-			break
-		}
-	}
-	return
-}
-
-// Statfs is an alias of golang.org/x/sys/unix.Statfs, wrapped to automatically retry on EINTR.
-func Statfs(path string, stat *unix.Statfs_t) (err error) {
-	for {
-		err = unix.Statfs(path, stat)
 		if err != syscall.EINTR {
 			break
 		}
