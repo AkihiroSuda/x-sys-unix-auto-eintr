@@ -102,10 +102,8 @@ func IoctlSetTermios(fd int, req uint, value *unix.Termios) error {
 // IoctlGetInt is an alias of golang.org/x/sys/unix.IoctlGetInt, wrapped to automatically retry on EINTR.
 func IoctlGetInt(fd int, req uint) (int, error) {
 	var (
-		_v1 error
-	)
-	var (
 		_v0 int
+		_v1 error
 	)
 	for {
 		_v0, _v1 = unix.IoctlGetInt(fd, req)
@@ -120,8 +118,6 @@ func IoctlGetInt(fd int, req uint) (int, error) {
 func IoctlGetWinsize(fd int, req uint) (*unix.Winsize, error) {
 	var (
 		_v0 *unix.Winsize
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -137,8 +133,6 @@ func IoctlGetWinsize(fd int, req uint) (*unix.Winsize, error) {
 func IoctlGetTermios(fd int, req uint) (*unix.Termios, error) {
 	var (
 		_v0 *unix.Termios
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -169,8 +163,6 @@ func CmsgSpace(datalen int) int {
 func ParseSocketControlMessage(b []byte) ([]unix.SocketControlMessage, error) {
 	var (
 		_v0 []unix.SocketControlMessage
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -191,8 +183,6 @@ func UnixRights(fds int) []byte {
 func ParseUnixRights(m *unix.SocketControlMessage) ([]int, error) {
 	var (
 		_v0 []int
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -208,8 +198,6 @@ func ParseUnixRights(m *unix.SocketControlMessage) ([]int, error) {
 func ByteSliceFromString(s string) ([]byte, error) {
 	var (
 		_v0 []byte
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -225,8 +213,6 @@ func ByteSliceFromString(s string) ([]byte, error) {
 func BytePtrFromString(s string) (*byte, error) {
 	var (
 		_v0 *byte
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -264,8 +250,6 @@ func Getsockname(fd int) (sa unix.Sockaddr, err error) {
 func GetsockoptString(fd, level, opt int) (string, error) {
 	var (
 		_v0 string
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -325,8 +309,6 @@ func ReadDirent(fd int, buf []byte) (n int, err error) {
 func Wait4(pid int, wstatus *unix.WaitStatus, options int, rusage *unix.Rusage) (int, error) {
 	var (
 		_v0 int
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -392,8 +374,6 @@ func UtimesNanoAt(dirfd int, path string, ts []unix.Timespec, flags int) error {
 func FcntlInt(fd uintptr, cmd, arg int) (int, error) {
 	var (
 		_v0 int
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -532,8 +512,6 @@ func IoctlSetTermio(fd int, req uint, value *unix.Termio) (err error) {
 func IoctlGetTermio(fd int, req uint) (*unix.Termio, error) {
 	var (
 		_v0 *unix.Termio
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -696,8 +674,6 @@ func GetsockoptInet4Addr(fd, level, opt int) (value [4]byte, err error) {
 func GetsockoptIPMreq(fd, level, opt int) (*unix.IPMreq, error) {
 	var (
 		_v0 *unix.IPMreq
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -713,8 +689,6 @@ func GetsockoptIPMreq(fd, level, opt int) (*unix.IPMreq, error) {
 func GetsockoptIPv6Mreq(fd, level, opt int) (*unix.IPv6Mreq, error) {
 	var (
 		_v0 *unix.IPv6Mreq
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -730,8 +704,6 @@ func GetsockoptIPv6Mreq(fd, level, opt int) (*unix.IPv6Mreq, error) {
 func GetsockoptIPv6MTUInfo(fd, level, opt int) (*unix.IPv6MTUInfo, error) {
 	var (
 		_v0 *unix.IPv6MTUInfo
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -747,8 +719,6 @@ func GetsockoptIPv6MTUInfo(fd, level, opt int) (*unix.IPv6MTUInfo, error) {
 func GetsockoptICMPv6Filter(fd, level, opt int) (*unix.ICMPv6Filter, error) {
 	var (
 		_v0 *unix.ICMPv6Filter
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -764,8 +734,6 @@ func GetsockoptICMPv6Filter(fd, level, opt int) (*unix.ICMPv6Filter, error) {
 func GetsockoptLinger(fd, level, opt int) (*unix.Linger, error) {
 	var (
 		_v0 *unix.Linger
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -781,8 +749,6 @@ func GetsockoptLinger(fd, level, opt int) (*unix.Linger, error) {
 func GetsockoptTimeval(fd, level, opt int) (*unix.Timeval, error) {
 	var (
 		_v0 *unix.Timeval
-	)
-	var (
 		_v1 error
 	)
 	for {
@@ -1064,8 +1030,6 @@ func NsecToTimespec(nsec int64) unix.Timespec {
 func TimeToTimespec(t time.Time) (unix.Timespec, error) {
 	var (
 		_v0 unix.Timespec
-	)
-	var (
 		_v1 error
 	)
 	for {

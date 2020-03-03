@@ -6,6 +6,7 @@ import (
 	"go/build"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
 	"golang.org/x/tools/go/loader"
@@ -108,9 +109,12 @@ func processFuncDecl(w io.Writer, decl *ast.FuncDecl) error {
 	}
 	fmt.Fprintf(w, "%s {\n", formatFuncDecl(decl)) // BEGIN function
 	if needsWrap {
-		for i, t := range anonIdxTypeMap {
+		if len(anonIdxTypeMap) != 0 {
 			fmt.Fprintf(w, "\tvar (\n") // BEGIN var
-			fmt.Fprintf(w, "\t\t%s %s\n", resNames[i], t)
+			for _, i := range sortKeysMapIntString(anonIdxTypeMap) {
+				t := anonIdxTypeMap[i]
+				fmt.Fprintf(w, "\t\t%s %s\n", resNames[i], t)
+			}
 			fmt.Fprintf(w, "\t)\n") // END var
 		}
 		fmt.Fprintf(w, "\tfor {\n") // BEGIN for
@@ -253,4 +257,13 @@ func formatFuncDecl(decl *ast.FuncDecl) string {
 	s += fmt.Sprintf("%s(%s)", decl.Name.Name, formatFuncParams(decl.Type.Params, withTypes))
 	s += formatFuncResults(decl.Type.Results, withTypes)
 	return s
+}
+
+func sortKeysMapIntString(m map[int]string) []int {
+	var x []int
+	for i := range m {
+		x = append(x, i)
+	}
+	sort.Ints(x)
+	return x
 }
